@@ -36,8 +36,7 @@ public class gameView extends Application {
 	private BorderPane root;
 	private HBox yourHand;
 	private betDialog betDialog;
-	private Label emptyRiver;
-	private int botCount;
+    private int botCount;
 	
 	runGame gameRun;
 	
@@ -48,10 +47,6 @@ public class gameView extends Application {
 		mainStage.setResizable(false);
 		this.root= new BorderPane();
 		root.setStyle("-fx-background-color: #35654d;");
-		
-		emptyRiver= new Label("River is currently empty.");
-		emptyRiver.setFont(Font.font("verdana", FontWeight.BOLD, 20));
-		emptyRiver.setStyle("-fx-text-fill: black;");
 		
 		RList= new VBox();
 		RList.setPadding(new Insets(5,3,5,3));
@@ -174,7 +169,6 @@ public class gameView extends Application {
 			} else {
 				River.setSpacing(10);
 				River.setPadding(new Insets(10));
-				
 				
 				ArrayList<ImageView> images = new ArrayList<>();
 				for (int i = 0; i < river.size(); i++) {
@@ -345,10 +339,7 @@ public class gameView extends Application {
 	        
 	        
 	        amt.getDialogPane().getButtonTypes().remove(ButtonType.CANCEL);
-	        amt.getDialogPane().getScene().getWindow().setOnCloseRequest(event -> {
-	        	Platform.exit();
-	        	System.exit(0);
-	        });
+
 	        
 	        amt.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
 	        	okay.setDisable(newValue.trim().isEmpty());

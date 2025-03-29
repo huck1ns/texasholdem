@@ -1,7 +1,5 @@
  package texasholdem;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 public class Deck {
@@ -36,6 +34,7 @@ public class Deck {
             deck[j] = temp;
         }
     }
+
 	public void printDeck() {
 		for (int i=0; i<52;i++) {
 			if (i==51) {

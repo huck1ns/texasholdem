@@ -9,6 +9,6 @@ module texasholdem {
 	requires javafx.fxml;
 	//requires org.junit.jupiter.api;
 	
-	exports texasholdem;
+	opens texasholdem;
 
 }
