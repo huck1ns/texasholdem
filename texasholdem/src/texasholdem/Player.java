@@ -7,7 +7,7 @@ public class Player  {
 	
 	public boolean fold = false;
 	//static Pot Money = new Pot();
-	public static int Bal = 1000;
+	public int Bal = 1000;
 	public Hand playerHand;
 	public static int prevBet;
 	public int[] currentBest;

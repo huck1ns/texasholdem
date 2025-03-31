@@ -27,6 +27,7 @@ import java.io.InputStream;
 import javafx.scene.control.Label;
 
 
+@SuppressWarnings("unused")
 public class gameView extends Application {
 	
 	private TextArea outputArea;
@@ -72,7 +73,7 @@ public class gameView extends Application {
 		outputArea.setStyle("-fx-control-inner-background: #1e2e26; -fx-background-color: #1e2e26;");
 		
 		Integer[] choices = {1,2,3,4,5,6,7};
-		ChoiceDialog<Integer> oneThroughSeven = new ChoiceDialog(choices[0], Arrays.asList(choices));
+		ChoiceDialog<Integer> oneThroughSeven = new ChoiceDialog<>(choices[0], Arrays.asList(choices));
 		oneThroughSeven.setHeaderText("Bot Selection");
 		oneThroughSeven.setContentText("How many bots would you like to play against?");
 		
@@ -99,14 +100,15 @@ public class gameView extends Application {
 		exitButton.setPrefSize(435,50);
 		exitButton.setOnAction(event-> {
 			Optional<ButtonType> result= exitAlert.showAndWait();
-			if (result.get()==ButtonType.YES) Platform.exit();
+			if (result.isPresent() && result.get()==ButtonType.YES) Platform.exit();
 		});
 		root.setBottom(createMenu(startButton, exitButton));
 		
 		Image logo;
 		try {
 			InputStream inputStream = getClass().getResourceAsStream("/logo.png");
-			logo = new Image(inputStream);
+            assert inputStream != null;
+            logo = new Image(inputStream);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return;
@@ -164,20 +166,18 @@ public class gameView extends Application {
 	public void updateRiver(ArrayList<Card> river) {
 		Platform.runLater(()-> {
 			River.getChildren().clear();
-			if (river==null || river.isEmpty()) {
-				return;
-			} else {
+			if (river!=null && !river.isEmpty()) {
 				River.setSpacing(10);
 				River.setPadding(new Insets(10));
 				
 				ArrayList<ImageView> images = new ArrayList<>();
-				for (int i = 0; i < river.size(); i++) {
-			        ImageView imageView = new ImageView(river.get(i).getImage());
-			        imageView.setFitWidth(84); 
-			        imageView.setFitHeight(126);
-			        imageView.setPreserveRatio(true); 
-			        images.add(imageView);
-			    }
+                for (Card card : river) {
+                    ImageView imageView = new ImageView(card.getImage());
+                    imageView.setFitWidth(84);
+                    imageView.setFitHeight(126);
+                    imageView.setPreserveRatio(true);
+                    images.add(imageView);
+                }
 				River.getChildren().addAll(images);
 			}
 		});
@@ -232,7 +232,7 @@ public class gameView extends Application {
 		Platform.runLater(() -> {
 			Alert continueGame= new Alert(AlertType.CONFIRMATION, "Do you want to continue?", ButtonType.YES, ButtonType.NO);
 			Optional<ButtonType> result= continueGame.showAndWait();
-			if (result.get()==ButtonType.YES) {
+			if (result.isPresent() && result.get()==ButtonType.YES) {
 				gameRun.reset();
 				gameRun.startGame(botCount);
 			} else {
@@ -260,11 +260,7 @@ public class gameView extends Application {
 				betDialog.completeFuture();
 			});
 				
-			betDialog.setRaise(()-> {
-				raise(this.mainStage);
-				
-					
-			});
+			betDialog.setRaise(()-> raise(this.mainStage));
 				
 			betMenuDisable();
 			updateOutput("");
@@ -272,34 +268,24 @@ public class gameView extends Application {
 	}
 	
 	public void betMenuEnable() {
-		Platform.runLater(() -> {
-			this.betDialog.enableButtons();
-		});
+		Platform.runLater(() -> this.betDialog.enableButtons());
 		
 	}
 	
 	public void checkPossible() {
-		Platform.runLater(() -> {
-			this.betDialog.checkPossible();
-		});
+		Platform.runLater(() -> this.betDialog.checkPossible());
 	}
 	
 	public void checkImpossible() {
-		Platform.runLater(() -> {
-			this.betDialog.checkImpossible();
-		});
+		Platform.runLater(() -> this.betDialog.checkImpossible());
 	}
 	
 	public void disableCall() {
-		Platform.runLater(() -> {
-			this.betDialog.disableCall();
-		});;
+		Platform.runLater(() -> this.betDialog.disableCall());
 	}
 	
 	public void betMenuDisable() {
-		Platform.runLater(() -> {
-			this.betDialog.disableButtons();
-		});
+		Platform.runLater(() -> this.betDialog.disableButtons());
 	}
 	
 	public betDialog getBetDialog() {
@@ -329,7 +315,7 @@ public class gameView extends Application {
 	            }
 	        };
 	        
-	        TextFormatter form= new TextFormatter<>(filter);
+	        TextFormatter<Object> form= new TextFormatter<>(filter);
 	      
 	        amt.getEditor().setTextFormatter(form);
 	        
@@ -344,22 +330,16 @@ public class gameView extends Application {
 	        amt.getEditor().textProperty().addListener((observable, oldValue, newValue) -> {
 	        	okay.setDisable(newValue.trim().isEmpty());
 	        	if (!newValue.trim().isEmpty()) {
-	        		Long val= Long.parseLong(newValue.trim());
-	            	if (val>gameRun.game.player.Bal || val==0) {
-	            		okay.setDisable(true);
-	            	} else {
-	            		okay.setDisable(false);
-	            	}
+	        		long val= Long.parseLong(newValue.trim());
+                    okay.setDisable(val > gameRun.game.player.Bal || val == 0);
 	        	}
 	        });
 	        
 	        Optional<String> result2= amt.showAndWait();
 	    
 	        result2.ifPresent(value-> {
-	        	if (Integer.valueOf(value)>gameRun.game.player.Bal) {
-	        	}
-	        	amt.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
-	        	updateOutput(gameRun.game.player.play(Integer.valueOf(value)));
+                amt.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+	        	updateOutput(gameRun.game.player.play(Integer.parseInt(value)));
 	        	betDialog.completeFuture();
 	        });
 		});
@@ -368,5 +348,4 @@ public class gameView extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
 }

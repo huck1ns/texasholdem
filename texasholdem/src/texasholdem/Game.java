@@ -113,7 +113,7 @@ public class Game {
 			win+=("You won this round!\n");
 			win+=("Your hand was "+hand+"!\n");
 			win+=("You win the pot of "+pot.currentPot+"!\n");
-			Player.Bal+=pot.payOut();
+			this.player.Bal+=pot.payOut();
 			win+=("Your new balance is "+player.Bal+"!\n\n");
 		} else {
 			String hand=Bot.findHandToString(Bot.findHand(winner.currentBest));
