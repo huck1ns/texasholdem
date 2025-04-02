@@ -1,35 +1,14 @@
 package texasholdem;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.VBox;
 import java.util.Collections;
-import java.util.Optional;
-import javafx.scene.control.TextInputDialog;
-import java.util.function.UnaryOperator;
-import javafx.scene.control.TextFormatter;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
-
 
 public class runGame {
-	
-	private TextArea outputArea;
 	public Game game;
-	private Stage mainStage;
-	private VBox RList;
-	private gameView view;
+	private final gameView view;
 	
 	public runGame(gameView view) {
 		this.view=view;
-		this.game= new Game(this);
+		this.game= new Game();
 	}
 	
 
@@ -59,7 +38,7 @@ public class runGame {
 						waitForPlayerBet();
 						view.updateRightDisplay(game.player.Bal,game.pot.currentPot);
 						view.betMenuDisable();
-					} else if (bot.name!="Player") {
+					} else if (!bot.name.equals("Player")) {
 						String output = bot.play(i);
 						try { 
 							Thread.sleep(1000);
@@ -73,7 +52,7 @@ public class runGame {
 				view.updateRightDisplay(game.player.Bal, game.pot.currentPot);
 				view.updateOutput("\n");
 				game.miniRound++;
-				game.shiftLeft(game.bots);
+				Game.shiftLeft(game.bots);
 				game.pot.resetBets();
 				view.updateRightDisplay(game.player.Bal, game.pot.currentPot);
 			}
@@ -109,9 +88,7 @@ public class runGame {
 	}
 	
 	public void waitForPlayerBet() {
-		view.getBetDialog().playerWait(() -> {
-			view.betMenuDisable();
-		});
+		view.getBetDialog().playerWait(view::betMenuDisable);
 	}
 	
 	

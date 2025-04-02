@@ -5,8 +5,8 @@ import java.io.InputStream;
 
 public class Card {
 	private final String suit;
-	private int value;
-	private Image image;
+	private final int value;
+	private final Image image;
 	
 	
 	Card(String suit, int value) {
@@ -41,7 +41,7 @@ public class Card {
 		if (this==o) return true;
 		if (o==null || o.getClass() != getClass()) return false;
 		Card card = (Card) o;
-		return value==card.value && suit==card.suit;
+		return value==card.value && suit.equals(card.suit);
 	}
 	
 	public Image createImage() {
@@ -59,24 +59,13 @@ public class Card {
 	}
 	
 	public String imageName() {
-		String valueName;
-		
-		switch(this.value) {
-		
-		case (11): 
-			valueName="jack";
-			break;
-		case (12): 
-			valueName="queen";
-			break;
-		case (13): 
-			valueName="king";
-			break;
-		case (14): 
-			valueName="ace";
-			break;
-		default: valueName= String.valueOf(this.value);
-		}
-		return (valueName+"_of_"+this.suit+".png");
+		String valueName = switch (this.value) {
+            case (11) -> "jack";
+            case (12) -> "queen";
+            case (13) -> "king";
+            case (14) -> "ace";
+            default -> String.valueOf(this.value);
+        };
+        return (valueName+"_of_"+this.suit+".png");
 	}
 }

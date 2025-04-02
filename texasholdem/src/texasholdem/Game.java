@@ -1,53 +1,34 @@
 package texasholdem;
-import java.util.Scanner;
 
-import javafx.application.Platform;
-import javafx.scene.control.TextInputDialog;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
-import java.util.InputMismatchException;
-import java.util.Optional;
+
 
 
 
 public class Game {
-	public int round = 1;
 	public ArrayList<Bot> bots;
 	public Deck deck;
 	public Pot pot;
 	public River river;
 	public int miniRound = 1;
-	public boolean remove = false;
-	public int currentPlayerCount;
 	public Player player;
-	private runGame gameRun;
-	public boolean reset;
+    public boolean reset;
 	
 	
-	public Game(runGame gameRun) {
-		this.gameRun=gameRun;
-		this.deck = new Deck();
-		this.pot= new Pot(this);
+	public Game() {
+        this.deck = new Deck();
+		this.pot= new Pot();
 		this.river = new River(this);
 		this.player= new Player(this);
 	}
-	
-	public void setRound() {
-		round++;
-	}
-	
-	public void setCurrentPlayerCount(ArrayList currentPlayers) {
-		currentPlayerCount=currentPlayers.size();
-	}
-	
-	
+
 		/*
 		 * Allows user to pick number of bots, also creates a bot with the name player, this bot will be detected and start the players turn.
 		 */
 	public String setBots(int n) {
 		if (reset) return "";
-		String sendBack ="";
+		StringBuilder sendBack = new StringBuilder();
 		bots=new ArrayList<>();
 		Collections.shuffle(Bot.possibleNames);
 			for (int i=0; i<n+1; i++) {
@@ -57,8 +38,8 @@ public class Game {
 						
 			for (int i=0; i<bots.size()-1; i++) {
 				if (i==bots.size()-2) {
-					sendBack+=(bots.get(i).name+".");
-				} else sendBack+=(bots.get(i).name+", ");
+					sendBack.append(bots.get(i).name).append(".");
+				} else sendBack.append(bots.get(i).name).append(", ");
 			}
 		if (n==1) return ("Created bot: "+sendBack+"\n");
 		else return ("Created bots: "+sendBack+"\n");
@@ -68,7 +49,7 @@ public class Game {
 	
 	//shifts one for every round besides the first
 	public static void shiftLeft(ArrayList<Bot> array) {
-        Bot firstElement = array.get(0);
+        Bot firstElement = array.getFirst();
         
         for (int i=0; i<array.size()-1; i++) {
             array.set(i, array.get(i+1));
@@ -80,10 +61,10 @@ public class Game {
 
 	public Bot findWinner(ArrayList<Bot> botsCopy) {
 		int[] maxHand= {10,0}; 
-		Bot currentWinner=botsCopy.get(0);
+		Bot currentWinner=botsCopy.getFirst();
 		
 		for (Bot bot : botsCopy) {
-			if (bot.name=="Player") { //Checks if the bot is a player to check the players hand rather than placeholder bot
+			if (bot.name.equals("Player")) { //Checks if the bot is a player to check the players hand rather than placeholder bot
 				if (player.currentBest[0]<maxHand[0] || (player.currentBest[0] == maxHand[0] && player.currentBest[1]>maxHand[1])) {
 					maxHand=player.currentBest;
 					currentWinner=bot;
@@ -101,14 +82,14 @@ public class Game {
 	public String endOfRoundDisplay() {
 		ArrayList<Bot> botsCopy = new ArrayList<>();
 		for (Bot bot: bots) {
-			if (bot.name=="Player" && !player.fold) botsCopy.add(bot);
-			else if (bot.name!="Player" && !bot.isOut) botsCopy.add(bot);
+			if (bot.name.equals("Player") && !player.fold) botsCopy.add(bot);
+			else if (!bot.name.equals("Player") && !bot.isOut) botsCopy.add(bot);
 		}
-		if (botsCopy.size()==0) return "No winner, all players fold.";
+		if (botsCopy.isEmpty()) return "No winner, all players fold.";
 		Bot winner=findWinner(botsCopy);
 		String win="";
 		
-		if (winner.name=="Player") {
+		if (winner.name.equals("Player")) {
 			String hand=Bot.findHandToString(player.currentBest);
 			win+=("You won this round!\n");
 			win+=("Your hand was "+hand+"!\n");
