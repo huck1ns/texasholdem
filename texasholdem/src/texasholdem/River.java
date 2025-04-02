@@ -5,7 +5,7 @@ import java.util.Collections;
 
 public class River {
 	public ArrayList<Card> river;
-	private Game game;
+	private final Game game;
 	
 	
 	River(Game game) {
@@ -26,15 +26,15 @@ public class River {
 	}
 	
 	public String toString() {
-		String river="";
+		StringBuilder river= new StringBuilder();
 		for (int i=0; i<this.river.size(); i++) {
 			if (i==this.river.size()-1) {
-				river=river+this.river.get(i).toString();
+				river.append(this.river.get(i).toString());
 			} else {
-				river=river+this.river.get(i).toString()+", ";
+				river.append(this.river.get(i).toString()).append(", ");
 			}
 		}
-		return river;
+		return river.toString();
 	}
 	
 }

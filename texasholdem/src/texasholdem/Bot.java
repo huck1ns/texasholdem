@@ -1,11 +1,8 @@
 package texasholdem;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
 
 public class Bot {
 	
@@ -16,9 +13,8 @@ public class Bot {
 	public String name;
 	public static List<String> possibleNames= Arrays.asList("Jeremy", "Thomas", "Jack", "Kristian", "Jayvon", "Haley", "Sam", "Ava", "Todd", "Nicole",
 			"Rick", "Darerick"); //Add any names you like
-	public static int prevBet;
 	public Card[] currentBest;
-	private Game game;
+	private final Game game;
 	public boolean isOut;
 
 	
@@ -29,11 +25,7 @@ public class Bot {
 		this.game=game;
 		isOut=false;
 	}
-	
-	//Not used
-	Bot(String n) {
-		name="Player";
-	}
+
 	
 	//Good
 	public void setName(int n) {
@@ -48,12 +40,12 @@ public class Bot {
 	//Good
 	//Will run all methods required for the bot to play the round
 	public String play(int subRound) {
-		int bet=0;
-		if (subRound==0) {
-			Confidence=analyzeStartingHand();
-			Confidence+=analyzeBets();
-			return buyIn();
-		}
+		int bet;
+        if (subRound == 0) {
+            Confidence = analyzeStartingHand();
+            Confidence += analyzeBets();
+            return buyIn();
+        }
 		if (subRound>0) {
 			this.botHand.combineHand();
 			setCurrentBest();
@@ -139,9 +131,7 @@ public class Bot {
 	//decides amount to bet based on confidence (if we decide that the person that starts always changes)
 	//Might have to change based on raising rather than saying how much 
 	private int betAmount() {
-
 		Random random = new Random();
-		int bet;
 		if (Balance>0) {	
 			if (Confidence >= 1000) return random.nextInt((int)(Balance - (Balance * 0.9))) + (int)(Balance * 0.9);
 			if (Confidence >= 900) return random.nextInt((int)(Balance * .9 - (Balance* 0.8))) + (int)(Balance / 2 * 0.8);
@@ -173,14 +163,13 @@ public class Bot {
 	private String bet(int betAmount) {
 		game.pot.addBet(betAmount);
 		Balance=Balance-betAmount;
-		String bet=this.name + " bets " + betAmount + " chips.\n";
-		return bet;
+        return this.name + " bets " + betAmount + " chips.\n";
 	}
 	
 
 	//Good
 
-	//Use call method, check is imbeded into call
+	//Use call method, check is imbedded into call
 	//-1 means that bot folds
 
 	//private int call() {
@@ -223,7 +212,7 @@ public class Bot {
 	 * Cards in bot hand + the 3 cards in river
 	 */
 	private int analyzeHand() {
-		int[] readHand= {10,0};
+		int[] readHand;
 		readHand=findHand(currentBest);
 		return getConfidence(readHand);
 	}
@@ -232,7 +221,6 @@ public class Bot {
 	public static Card[] findBest(Card[] bigHand) {
 		if (bigHand.length==5) return bigHand;
 		List<Card[]> possibleHands=findHandCombos(bigHand);
-		ArrayList<int[]> readHands = new ArrayList<>();
 		
 		 if (possibleHands.isEmpty()) {
 		        throw new IllegalStateException("No valid 5-card combinations found. Check the input array.");
@@ -283,8 +271,6 @@ public class Bot {
 		int[] countV=countValues(hand);
 		int[] readHand= new int[2]; 
 		if (checkRoyalFlush(countS,countV)) {
-			readHand[0]=0;
-			readHand[1]=0;
 			return readHand;
 		}
 		int SF=(checkStraightFlush(countS,countV));
@@ -293,13 +279,13 @@ public class Bot {
 			readHand[1]=SF;
 			return readHand;
 		}
-		int FOAK=(checkFourOfAKind(countS,countV));
+		int FOAK=(checkFourOfAKind(countV));
 		if (FOAK>0) {
 			readHand[0]=2;
 			readHand[1]=FOAK;
 			return readHand;
 		}
-		int FH=(checkFullHouse(countS,countV));
+		int FH=(checkFullHouse(countV));
 		if (FH>0) {
 			readHand[0]=3;
 			readHand[1]=FH;
@@ -311,31 +297,31 @@ public class Bot {
 			readHand[1]=F;
 			return readHand;
 		}
-		int S=(checkStraight(countS,countV));
+		int S=(checkStraight(countV));
 		if (S>0) {
 			readHand[0]=5;
 			readHand[1]=S;
 			return readHand;
 		}
-		int TOAK=(checkThreeOfAKind(countS,countV));
+		int TOAK=(checkThreeOfAKind(countV));
 		if (TOAK>0) {
 			readHand[0]=6;
 			readHand[1]=TOAK;
 			return readHand;
 		}
-		int TP=(checkTwoPair(countS,countV));
+		int TP=(checkTwoPair(countV));
 		if (TP>0) {
 			readHand[0]=7;
 			readHand[1]=TP;
 			return readHand;
 		}
-		int P=(checkPair(countS,countV));
+		int P=(checkPair(countV));
 		if (P>0) {
 			readHand[0]=8;
 			readHand[1]=P;
 			return readHand;
 		}
-		int HC=(checkHighCard(countS,countV));
+		int HC=(checkHighCard(countV));
 		if (HC>0) {
 			readHand[0]=9;
 			readHand[1]=HC;
@@ -345,14 +331,13 @@ public class Bot {
 	}
 	
 	/*
-	 * Prints what hand it is, and "+ CARD_VALUE", for example "Pair, +18")
+	 * Prints what hand it is, and "+ CARD_VALUE", for example "Pair, +18"
 	 */
 
 	public static String findHandToString(int[] readHand) {
 		int handNum=readHand[0];
 		String handAdd=String.valueOf(readHand[1]);
-		String bestHand=(Hand.hands[handNum]+", +"+handAdd);
-		return bestHand;
+		return (Hand.hands[handNum]+", +"+handAdd);
 	}
 	
 	/*
@@ -392,16 +377,6 @@ public class Bot {
 	    }
 	}
 
-		
-	static Card[] getSubset(Card[] input, int[] subset) {
-
-		Card[] result = new Card[subset.length]; 
-		for (int i = 0; i < subset.length; i++) {
-		    result[i] = input[subset[i]];
-		}
-	    return result;
-	}
-	
 	
 	/*
 	 * Counts how many of each value
@@ -466,32 +441,28 @@ public class Bot {
 	
 
 	public static int checkFlush(int[] suitCount, int[] valueCount) {
-		int value=0;
 		for (int i=0; i<4; i++) {
 			if (suitCount[i]==5) return totalValue(valueCount);
 		}
-		
 		return 0;
 	}
 	
-	public static int checkFullHouse(int[] suitCount, int[] valueCount) {
-		int value=0;
+	public static int checkFullHouse(int[] valueCount) {
 		for (int i=0; i<13; i++) {
 			if (valueCount[i]!=3 && valueCount[i]!=2 && valueCount[i]!=0) return 0;
 		}
 		return totalValue(valueCount);
 	}
 	
-	public static int  checkFourOfAKind(int[] suitCount, int[] valueCount) {
+	public static int  checkFourOfAKind(int[] valueCount) {
 		for (int i=0; i<13; i++) {
 			if (valueCount[i]==4) return totalValue(valueCount);
 		}
 		return 0;
 	}
 	
-	public static int checkStraight(int[] suitCount, int[] valueCount) {
+	public static int checkStraight(int[] valueCount) {
 		int c=0;
-		int value=0;
 		for (int i=0; i<13;i++) {
 			if (valueCount[i]>1) return 0;
 		}
@@ -504,14 +475,14 @@ public class Bot {
 		return totalValue(valueCount);
 	}
 	
-	public static int checkThreeOfAKind(int[] suitCount, int[] valueCount) {
+	public static int checkThreeOfAKind(int[] valueCount) {
 		for (int i=0; i<13; i++) {
 			if (valueCount[i]==3) return totalValue(valueCount);
 		}
 		return 0;
 	}
 	
-	public static int checkTwoPair(int[] suitCount, int[] valueCount) {
+	public static int checkTwoPair(int[] valueCount) {
 		int pairCount=0;
 		for (int i=0; i<13; i++) {
 			if (valueCount[i]==2) { 
@@ -522,14 +493,14 @@ public class Bot {
 		return 0;
 	}
 	
-	public static int checkPair(int[] suitCount, int[] valueCount) {
+	public static int checkPair(int[] valueCount) {
 		for (int i=0; i<13; i++) {
 			if (valueCount[i]==2) return totalValue(valueCount);
 		}
 		return 0;
 	}
 	
-	public static int checkHighCard(int[] suitCount, int[] valueCount) {
+	public static int checkHighCard(int[] valueCount) {
 		for (int i=12; i>-1; i--) {
 			if (valueCount[i]>0) return totalValue(valueCount);
 		}

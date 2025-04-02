@@ -6,7 +6,7 @@ public class Deck {
 	public static String[] suits={"Hearts", "Clubs", "Spades", "Diamonds"};
 	public static int[] values={2,3,4,5,6,7,8,9,10,11,12,13,14};
 	public static Card[] deck= new Card[52];
-	private boolean[] dealtCards = new boolean[52];
+	private final boolean[] dealtCards = new boolean[52];
 
 	Deck() {
 		buildDeck();
@@ -35,15 +35,16 @@ public class Deck {
         }
     }
 
-	public void printDeck() {
+	public String toString() {
+		StringBuilder str= new StringBuilder();
 		for (int i=0; i<52;i++) {
 			if (i==51) {
-				System.out.printf(deck[i].toString());
+				str.append(deck[i].toString());
 			} else {
-			System.out.printf(deck[i].toString()+", ");
+				str.append(deck[i].toString()).append(", ");
 			}
 		}
-		System.out.println();
+		return str.toString();
 	}
 	
 	

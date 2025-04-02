@@ -4,11 +4,12 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("unused")
 public class betDialog extends HBox {
-	private Button fold;
-	private Button check;
-	private Button call; 
-	private Button raise;
+	private final Button fold;
+	private final Button check;
+	private final Button call;
+	private final Button raise;
 	private CompletableFuture<Void> future;
 	
 	public betDialog() {

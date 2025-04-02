@@ -1,7 +1,4 @@
 package texasholdem;
-import java.util.Scanner;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Player  {
 	
@@ -11,7 +8,7 @@ public class Player  {
 	public Hand playerHand;
 	public static int prevBet;
 	public int[] currentBest;
-	private Game game;
+	private final Game game;
 	
 	
 	Player(Game game){
@@ -66,86 +63,23 @@ public class Player  {
 	}
 	
 	public void makeHand() {
-		Hand playerHand= new Hand(game);
-		this.playerHand=playerHand;
+		this.playerHand=new Hand(game);
 	}
 	
 	public int buyIn() {
-
-		Scanner input = new Scanner(System.in);
-		int ans;
-		do {
-		System.out.print("Would you like to buy in?(1 for YES 0 for NO): ");
-		ans = input.nextInt();
-		
-		if(ans > 1 || ans < 0) System.out.println("Please enter a valid input");
-		}
-		while(ans > 1 || ans < 0);
-		
-		if(ans == 1) {
-			Bal = Bal - 20;
-			game.pot.addBet(20);
-			prevBet = 20;
-			System.out.println("Player buys in for 20 chips.");
-			return 1;
-		}
-		if(ans == 0) {
-			System.out.println("Player folds");
-			return 0;
-		}
 		return 0;
 	}
-	
-	
+
 	public void check() {
 		makeBet(0);
 	}
-	
-	public static boolean wantToContinue() {
-		
-		Scanner input = new Scanner(System.in);
-		int con;
-		do {
-			System.out.print("Would you like to fold? (1 for YES/0 for NO): ");
-			con = input.nextInt();
-			
-			if(con > 1 || con < 0) System.out.println("Please enter '1' for YES or '0' for NO.");
-		}while(con > 1 || con < 0);
-		
-		if(con == 1) return true;
-		if(con == 0) return false;
-		return true;
-	}
-	
-	//
-	
+
 	public String call() {
 		int high = game.pot.highestBet(); //idk why this doesnt work
 		return makeBet(high);
-		
 	}
-	
-	
+
 	//Asks player if they want to call
-	
-	public static int askCall() {
-		Scanner input = new Scanner(System.in);
-		int ans;
-		
-		do {
-		System.out.print("Would you like to call? (1 for YES/0 for NO): ");
-		ans = input.nextInt();
-		
-		if(ans > 1 || ans < 0) System.out.println("Please enter '1' for YES and '0' for NO");
-		}while(ans > 1 || ans < 0);
-		
-		if(ans == 1) return 1;
-		if(ans == 0) return 0;
-		return 0;
-	}
-		
-	public static void main(String[] args) {
-		
-	}
+
 }
 
