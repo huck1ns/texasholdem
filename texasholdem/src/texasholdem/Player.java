@@ -4,11 +4,12 @@ public class Player  {
 	
 	public boolean fold = false;
 	//static Pot Money = new Pot();
-	public int Bal = 1000;
-	public Hand playerHand;
+	public int balance = 1000;
+	public Hand hand;
 	public static int prevBet;
 	public int[] currentBest;
 	private final Game game;
+	public final String name = "Player";
 	
 	
 	Player(Game game){
@@ -41,7 +42,7 @@ public class Player  {
 			*/
 				if (game.miniRound>1) {
 					
-					playerHand.combineHand();
+					hand.combineHand();
 					setCurrentBest();
 				}
 				return makeBet(n);
@@ -49,13 +50,13 @@ public class Player  {
 	
 
 	private void setCurrentBest() {
-		this.currentBest=Bot.findHand(Bot.findBest(playerHand.combinedHand));
+		this.currentBest=Bot.findHand(Bot.findBest(hand.combinedHand));
 
 	}
 	
 	public String makeBet(int betAmount) {
 		if (betAmount==0) return "You check! \n";
-		Bal = Bal - betAmount;
+		balance = balance - betAmount;
 		game.pot.addBet(betAmount);
 		prevBet = betAmount;
 		
@@ -63,7 +64,7 @@ public class Player  {
 	}
 	
 	public void makeHand() {
-		this.playerHand=new Hand(game);
+		this.hand=new Hand(game);
 	}
 	
 	public int buyIn() {

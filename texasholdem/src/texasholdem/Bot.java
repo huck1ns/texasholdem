@@ -4,11 +4,8 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.List;
 
-public class Bot {
-	
-	public int Balance=1000;
+public class Bot extends Player {
 	public int Confidence=0;
-	public Hand botHand;
 	public boolean Stand = true;
 	public String name;
 	public static List<String> possibleNames= Arrays.asList("Jeremy", "Thomas", "Jack", "Kristian", "Jayvon", "Haley", "Sam", "Ava", "Todd", "Nicole",
@@ -20,10 +17,10 @@ public class Bot {
 	
 	
 	//Good
-	Bot(int n, Game game) {
-		setName(n);
+	Bot(Game game, int n) {
+		super(game);
 		this.game=game;
-		isOut=false;
+		setName(n);
 	}
 
 	
@@ -34,7 +31,7 @@ public class Bot {
 	
 	//Good
 	public void makeHand() {
-		this.botHand=new Hand(game);
+		this.hand=new Hand(game);
 	}
 	
 	//Good
@@ -44,10 +41,10 @@ public class Bot {
         if (subRound == 0) {
             Confidence = analyzeStartingHand();
             Confidence += analyzeBets();
-            return buyIn();
+            //return buyIn();
         }
 		if (subRound>0) {
-			this.botHand.combineHand();
+			this.hand.combineHand();
 			setCurrentBest();
 			Confidence=analyzeHand();
 			Confidence+=analyzeBets();
@@ -62,7 +59,7 @@ public class Bot {
 	//Good
 	private int analyzeStartingHand() {
 		
-		int value= checkCardValueStart(botHand.hand);
+		int value= checkCardValueStart(hand.hand);
 		int confidence=0;
 		
 		for(int i = 0; i < 2; i++) {
@@ -132,37 +129,26 @@ public class Bot {
 	//Might have to change based on raising rather than saying how much 
 	private int betAmount() {
 		Random random = new Random();
-		if (Balance>0) {	
-			if (Confidence >= 1000) return random.nextInt((int)(Balance - (Balance * 0.9))) + (int)(Balance * 0.9);
-			if (Confidence >= 900) return random.nextInt((int)(Balance * .9 - (Balance* 0.8))) + (int)(Balance / 2 * 0.8);
-			if (Confidence >= 800) return random.nextInt((int)(Balance * .8 - (Balance * 0.7))) + (int)(Balance / 3 * 0.7);
-			if (Confidence >= 700) return random.nextInt((int)(Balance * .7 - (Balance * 0.6))) + (int)(Balance / 4 * 0.6);
-			if (Confidence >= 600) return random.nextInt((int)(Balance * .6 - (Balance * 0.5))) + (int)(Balance / 5 * 0.5);
-			if (Confidence >= 500) return random.nextInt((int)(Balance * .5 - (Balance * 0.4))) + (int)(Balance / 6 * 0.4);
-			if (Confidence >= 400) return random.nextInt((int)(Balance * .4 - (Balance * 0.3))) + (int)(Balance / 7 * 0.3);
-			if (Confidence >= 300) return random.nextInt((int)(Balance * .3 - (Balance * 0.2))) + (int)(Balance / 8 * 0.2);
-			if (Confidence >= 200) return random.nextInt((int)(Balance * .2 - (Balance * 0.1))) + (int)(Balance / 9 * 0.1);
-			if (Confidence >= 100) return random.nextInt((int)(Balance * .1 - (Balance * 0.0)));
+		if (balance>0) {
+			if (Confidence >= 1000) return random.nextInt((int)(balance - (balance * 0.9))) + (int)(balance * 0.9);
+			if (Confidence >= 900) return random.nextInt((int)(balance * .9 - (balance* 0.8))) + (int)(balance / 2 * 0.8);
+			if (Confidence >= 800) return random.nextInt((int)(balance * .8 - (balance * 0.7))) + (int)(balance / 3 * 0.7);
+			if (Confidence >= 700) return random.nextInt((int)(balance * .7 - (balance * 0.6))) + (int)(balance / 4 * 0.6);
+			if (Confidence >= 600) return random.nextInt((int)(balance * .6 - (balance * 0.5))) + (int)(balance / 5 * 0.5);
+			if (Confidence >= 500) return random.nextInt((int)(balance * .5 - (balance * 0.4))) + (int)(balance / 6 * 0.4);
+			if (Confidence >= 400) return random.nextInt((int)(balance * .4 - (balance * 0.3))) + (int)(balance / 7 * 0.3);
+			if (Confidence >= 300) return random.nextInt((int)(balance * .3 - (balance * 0.2))) + (int)(balance / 8 * 0.2);
+			if (Confidence >= 200) return random.nextInt((int)(balance * .2 - (balance * 0.1))) + (int)(balance / 9 * 0.1);
+			if (Confidence >= 100) return random.nextInt((int)(balance * .1 - (balance * 0.0)));
 		}
 		return 0;
 	}
-	
-	//Good
-	private String buyIn() {
-		String noBuy=this.name+" doesn't buy in.";
-		
-		if(Confidence >= 10) {
-			return bet(20);
-		}else {
-			Stand = false;
-		}
-		return noBuy;
-	}
+
 	
 	//Good
 	private String bet(int betAmount) {
 		game.pot.addBet(betAmount);
-		Balance=Balance-betAmount;
+		balance=balance-betAmount;
         return this.name + " bets " + betAmount + " chips.\n";
 	}
 	
@@ -194,18 +180,7 @@ public class Bot {
 		//}
 	//}
 	
-	private int check() {
-		int minConfidence = 0;
-		
-		if(game.miniRound == 2) minConfidence += 200;
-		if(game.miniRound == 3) minConfidence += 300;
-		if(game.miniRound == 4) minConfidence += 400;
-		if(Confidence < minConfidence) {
-			return 0;
-		}else {
-			return betAmount();
-		}
-	}
+
 	
 	//Good
 	/*
@@ -240,7 +215,7 @@ public class Bot {
 	}
 	
 	private void setCurrentBest() {
-		this.currentBest=findBest(this.botHand.combinedHand);
+		this.currentBest=findBest(this.hand.combinedHand);
 	}
 	
 	//Good

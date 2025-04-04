@@ -185,7 +185,7 @@ public class gameView extends Application {
 	
 	
 	public void updateRightDisplay(int balance, int pot) {
-		System.out.println("Updating right display - Balance: " + balance + ", Pot: " + pot); // Debugging
+		System.out.println("Updating right display - balance: " + balance + ", Pot: " + pot); // Debugging
 		Platform.runLater(()-> {
 			RList.getChildren().clear();
 			
@@ -331,7 +331,7 @@ public class gameView extends Application {
 	        	okay.setDisable(newValue.trim().isEmpty());
 	        	if (!newValue.trim().isEmpty()) {
 	        		long val= Long.parseLong(newValue.trim());
-                    okay.setDisable(val > gameRun.game.player.Bal || val == 0);
+                    okay.setDisable(val > gameRun.game.player.balance || val == 0);
 	        	}
 	        });
 	        

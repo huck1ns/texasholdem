@@ -7,7 +7,7 @@ import java.util.Collections;
 
 
 public class Game {
-	public ArrayList<Bot> bots;
+	public ArrayList<Player> players;
 	public Deck deck;
 	public Pot pot;
 	public River river;
@@ -29,17 +29,18 @@ public class Game {
 	public String setBots(int n) {
 		if (reset) return "";
 		StringBuilder sendBack = new StringBuilder();
-		bots=new ArrayList<>();
+		players =new ArrayList<>();
 		Collections.shuffle(Bot.possibleNames);
 			for (int i=0; i<n+1; i++) {
-				bots.add(new Bot(i,this));
+				players.add(new Bot(this,i));
+
 			}
-			bots.get(n).name="Player";
+			players.add(player);
 						
-			for (int i=0; i<bots.size()-1; i++) {
-				if (i==bots.size()-2) {
-					sendBack.append(bots.get(i).name).append(".");
-				} else sendBack.append(bots.get(i).name).append(", ");
+			for (int i=0; i<players.size()-1; i++) {
+				if (i==players.size()-2) {
+					sendBack.append(players.get(i).name).append(".");
+				} else sendBack.append(players.get(i).name).append(", ");
 			}
 		if (n==1) return ("Created bot: "+sendBack+"\n");
 		else return ("Created bots: "+sendBack+"\n");
@@ -48,14 +49,14 @@ public class Game {
 	
 	
 	//shifts one for every round besides the first
-	public static void shiftLeft(ArrayList<Bot> array) {
-        Bot firstElement = array.getFirst();
+	public  void shiftLeft() {
+        Player firstElement = players.getFirst();
         
-        for (int i=0; i<array.size()-1; i++) {
-            array.set(i, array.get(i+1));
+        for (int i=0; i<players.size()-1; i++) {
+            players.set(i, players.get(i+1));
         }
         
-        array.set(array.size()-1, firstElement);
+        players.set(players.size()-1, firstElement);
     }
 	
 
@@ -81,7 +82,7 @@ public class Game {
 	
 	public String endOfRoundDisplay() {
 		ArrayList<Bot> botsCopy = new ArrayList<>();
-		for (Bot bot: bots) {
+		for (Bot bot: players) {
 			if (bot.name.equals("Player") && !player.fold) botsCopy.add(bot);
 			else if (!bot.name.equals("Player") && !bot.isOut) botsCopy.add(bot);
 		}
@@ -94,14 +95,14 @@ public class Game {
 			win+=("You won this round!\n");
 			win+=("Your hand was "+hand+"!\n");
 			win+=("You win the pot of "+pot.currentPot+"!\n");
-			this.player.Bal+=pot.payOut();
-			win+=("Your new balance is "+player.Bal+"!\n\n");
+			this.player.balance+=pot.payOut();
+			win+=("Your new balance is "+player.balance+"!\n\n");
 		} else {
 			String hand=Bot.findHandToString(Bot.findHand(winner.currentBest));
 			win+=("Bot "+winner.name+" won this round!\n");
 			win+=("Their hand was "+hand+"!\n");
 			win+=("They win the pot of "+pot.currentPot+"!\n\n");
-			winner.Balance+=pot.payOut();
+			winner.balance+=pot.payOut();
 		}
 		return win;
 	}
