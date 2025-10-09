@@ -10,8 +10,8 @@ import java.util.HashSet;
 public class Bot {
 	
 	public int Balance=1000;
-	public int Confidence=0;
-	public Hand botHand;
+	private int Confidence=0;
+	private Hand botHand;
 	public boolean Stand = true;
 	public String name;
 	public static List<String> possibleNames= Arrays.asList("Jeremy", "Thomas", "Jack", "Kristian", "Jayvon", "Haley", "Sam", "Ava", "Todd", "Nicole",
@@ -70,7 +70,7 @@ public class Bot {
 	//Good
 	private int analyzeStartingHand() {
 		
-		int value= checkCardValueStart(botHand.hand);
+		int value= checkCardValueStart(botHand.getHand());
 		int confidence=0;
 		
 		for(int i = 0; i < 2; i++) {
@@ -252,7 +252,7 @@ public class Bot {
 	}
 	
 	private void setCurrentBest() {
-		this.currentBest=findBest(this.botHand.combinedHand);
+		this.currentBest=findBest(this.botHand.getCombinedHand());
 	}
 	
 	//Good
@@ -410,7 +410,7 @@ public class Bot {
 		int[] valueCount= new int[13];
 		for (int i=0; i<5; i++) {
 			for (int j=0; j<13; j++) {
-				if (bigHand[i].getValue()==Deck.values[j]) valueCount[j]++;
+				if (bigHand[i].getValue()==Deck.VALUES[j]) valueCount[j]++;
 			}
 		}
 		return valueCount;
@@ -428,7 +428,7 @@ public class Bot {
 		int total=0;
 		for (int i=0; i<13; i++) {
 			if (vals[i]>0) {
-				total+=Deck.values[i]*vals[i];
+				total+=Deck.VALUES[i]*vals[i];
 			}
 		}
 		return total;
@@ -535,10 +535,5 @@ public class Bot {
 		}
 		return 0;
 	}
-	
-	public static void main(String[] args) {
-		
-	}
-	
 }
 					

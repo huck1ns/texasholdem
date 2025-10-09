@@ -8,13 +8,13 @@ public class Player  {
 	public boolean fold = false;
 	//static Pot Money = new Pot();
 	public int Bal = 1000;
-	public Hand playerHand;
+	private Hand playerHand;
 	public static int prevBet;
 	public int[] currentBest;
 	private Game game;
 	
 	
-	Player(Game game){
+	Player(Game game) {
 		this.game=game;
 	}
 	
@@ -52,7 +52,7 @@ public class Player  {
 	
 
 	private void setCurrentBest() {
-		this.currentBest=Bot.findHand(Bot.findBest(playerHand.combinedHand));
+		this.currentBest=Bot.findHand(Bot.findBest(playerHand.getCombinedHand()));
 
 	}
 	
@@ -142,10 +142,6 @@ public class Player  {
 		if(ans == 1) return 1;
 		if(ans == 0) return 0;
 		return 0;
-	}
-		
-	public static void main(String[] args) {
-		
 	}
 }
 

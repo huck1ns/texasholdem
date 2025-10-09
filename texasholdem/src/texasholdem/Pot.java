@@ -3,12 +3,13 @@ import java.util.ArrayList;
 import javafx.beans.property.StringProperty;
 
 public class Pot {
-	public int currentPot = 0;
+	public int currentPot;
 	public ArrayList<Integer> bets = new ArrayList<>();
 	private Game game;
 	
 	Pot(Game game) {
-		this.game=game;
+		currentPot = 0;
+		this.game = game;
 	}
 	
 	// adds bets to ArrayList and currentPot
@@ -19,12 +20,10 @@ public class Pot {
 	}
 	
 	//Pays out from currentPot then resets the bets Arraylist
-	
 	public int payOut() {
 		int pay = currentPot;
 		currentPot = 0;
 		bets.clear();
-		
 		return pay;
 	}
 

@@ -1,13 +1,7 @@
 package texasholdem;
-import java.util.Scanner;
-
-import javafx.application.Platform;
-import javafx.scene.control.TextInputDialog;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
-import java.util.InputMismatchException;
-import java.util.Optional;
+
 
 
 

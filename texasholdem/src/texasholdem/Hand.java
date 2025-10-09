@@ -1,16 +1,24 @@
 package texasholdem;
 
 public class Hand {
-	public Card[] hand;
+	private Card[] hand;
 	public static final String[] hands= {"Royal Flush","Straight Flush", "Four of A Kind","Full House","Flush","Straight","Three of a Kind"
 ,"Two Pair","Pair","High Card"};
-	public Card[] combinedHand;
-	private Game game;
+	private Card[] combinedHand;
+	private final Game game;
 	
 	Hand(Game game) {
 		this.game=game;
 		makeHand();
 		
+	}
+
+	public Card[] getHand() {
+		return hand;
+	}
+
+	public Card[] getCombinedHand() {
+		return combinedHand;
 	}
 	
 	public Card[] makeHand() {
@@ -60,10 +68,5 @@ public class Hand {
 		}
 		return handString;
 	}
-	
-	
-	public static void main (String[] args) {
-	
-		
-	}
+
 }

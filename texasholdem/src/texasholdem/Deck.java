@@ -3,21 +3,21 @@
 import java.util.Random;
 
 public class Deck {
-	public static String[] suits={"Hearts", "Clubs", "Spades", "Diamonds"};
-	public static int[] values={2,3,4,5,6,7,8,9,10,11,12,13,14};
+	public static final String[] SUITS={"Hearts", "Clubs", "Spades", "Diamonds"};
+	public static final int[] VALUES={2,3,4,5,6,7,8,9,10,11,12,13,14};
 	public static Card[] deck= new Card[52];
-	private boolean[] dealtCards = new boolean[52];
+	private final boolean[] dealtCards = new boolean[52];
 
 	Deck() {
 		buildDeck();
 		shuffleDeck();
 	}
 	
-	public void buildDeck() {
+	private void buildDeck() {
 		int c=0;
 		for (int i=0; i<4; i++) {
 			for (int j=0; j<13;j++) {
-				deck[c]=new Card(suits[i], values[j]);
+				deck[c]=new Card(SUITS[i], VALUES[j]);
 				c++;
 			}
 		}
@@ -35,7 +35,8 @@ public class Deck {
         }
     }
 
-	public void printDeck() {
+	@SuppressWarnings("unused")
+    public void printDeck() {
 		for (int i=0; i<52;i++) {
 			if (i==51) {
 				System.out.printf(deck[i].toString());
